@@ -4,12 +4,16 @@ const cors = require("cors");
 
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const lostAndFoundRoutes = require("./routes/lostandfoundRoutes");
+const vaccinationRecordRoutes = require("./routes/vaccinationrecordRoutes");
+const vetAppointmentRoutes = require("./routes/vetappointmentRoutes");
+const memorialRoutes = require("./routes/memorialRoutes");
 
 dotenv.config();
 
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -18,6 +22,10 @@ connectDB();
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/lostandfound", lostAndFoundRoutes);
+app.use("/api/vaccinationrecords", vaccinationRecordRoutes);
+app.use("/api/vetappointments", vetAppointmentRoutes);
+app.use("/api/memorials", memorialRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
