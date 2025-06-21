@@ -7,9 +7,9 @@ const memorialSchema = new mongoose.Schema({
   imageUrl: String,
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  createdAt: { type: Date, default: Date.now }
-});
+    ref: 'User',
+    required: true
+  }
+}, { timestamps: true });
 
 module.exports = mongoose.model('Memorial', memorialSchema);

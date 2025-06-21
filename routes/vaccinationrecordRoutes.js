@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const VaccinationRecord = require('../models/VaccinationRecord');
 const { protect } = require('../middleware/authMiddleware');
+const {
+  getVaccinationRecords,
+  addVaccinationRecord,
+  updateVaccinationRecord,
+  deleteVaccinationRecord
+} = require('../controllers/vaccinationController');
 
-router.get('/', async (req, res) => {
-  const records = await VaccinationRecord.find().populate('createdBy', 'username email');
-  res.json(records);
-});
-
-router.post('/', protect, async (req, res) => {
-  const record = new VaccinationRecord({
-    ...req.body,
-    createdBy: req.user.id
-  });
-  await record.save();
-  res.status(201).json(record);
-});
+router.get('/', protect, getVaccinationRecords);
+router.post('/', protect, addVaccinationRecord);
+router.put('/:id', protect, updateVaccinationRecord);
+router.delete('/:id', protect, deleteVaccinationRecord);
 
 module.exports = router;

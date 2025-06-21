@@ -1,20 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const Memorial = require('../models/Memorial');
 const { protect } = require('../middleware/authMiddleware');
+const {
+  getMemorials,
+  addMemorial,
+  updateMemorial,
+  deleteMemorial
+} = require('../controllers/memorialController');
 
-router.get('/', async (req, res) => {
-  const memorials = await Memorial.find().populate('createdBy', 'username email');
-  res.json(memorials);
-});
-
-router.post('/', protect, async (req, res) => {
-  const memorial = new Memorial({
-    ...req.body,
-    createdBy: req.user.id
-  });
-  await memorial.save();
-  res.status(201).json(memorial);
-});
+router.get('/', protect, getMemorials);
+router.post('/', protect, addMemorial);
+router.put('/:id', protect, updateMemorial);
+router.delete('/:id', protect, deleteMemorial);
 
 module.exports = router;

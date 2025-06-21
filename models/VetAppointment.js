@@ -6,9 +6,9 @@ const vetAppointmentSchema = new mongoose.Schema({
   notes: String,
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  },
-  createdAt: { type: Date, default: Date.now }
-});
+    ref: 'User',
+    required: true 
+  }
+}, { timestamps: true }); 
 
 module.exports = mongoose.model('VetAppointment', vetAppointmentSchema);
