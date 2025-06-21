@@ -8,6 +8,7 @@ const lostAndFoundRoutes = require("./routes/lostandfoundRoutes");
 const vaccinationRecordRoutes = require("./routes/vaccinationrecordRoutes");
 const vetAppointmentRoutes = require("./routes/vetappointmentRoutes");
 const memorialRoutes = require("./routes/memorialRoutes");
+const adminStatsRoute = require('./routes/adminStats'); 
 
 dotenv.config();
 
@@ -26,6 +27,8 @@ app.use("/api/lostandfound", lostAndFoundRoutes);
 app.use("/api/vaccinationrecords", vaccinationRecordRoutes);
 app.use("/api/vetappointments", vetAppointmentRoutes);
 app.use("/api/memorials", memorialRoutes);
+app.use('/api/admin', adminStatsRoute);
+
 
 // Test Route
 app.get("/", (req, res) => {
