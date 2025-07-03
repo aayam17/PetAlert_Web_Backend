@@ -14,9 +14,18 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
+
+// ✅ Correct debug middleware AFTER express.json()
+app.use((req, res, next) => {
+  console.log("---- INCOMING REQUEST ----");
+  console.log("Method:", req.method);
+  console.log("URL:", req.originalUrl);
+  console.log("Headers:", req.headers);
+  console.log("Parsed Body:", req.body);
+  next();
+});
 
 // DB Connection
 connectDB();
@@ -28,7 +37,6 @@ app.use("/api/vaccinationrecords", vaccinationRecordRoutes);
 app.use("/api/vetappointments", vetAppointmentRoutes);
 app.use("/api/memorials", memorialRoutes);
 app.use('/api/admin', adminStatsRoute);
-
 
 // Test Route
 app.get("/", (req, res) => {

@@ -9,12 +9,10 @@ const { protect } = require('../middleware/authMiddleware');
 
 router.get('/stats', protect, async (req, res) => {
   try {
-    // Only allow admin access
     if (req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    // Count stats
     const users = await User.countDocuments();
     const appointments = await VetAppointment.countDocuments();
     const vaccinations = await VaccinationRecord.countDocuments();
