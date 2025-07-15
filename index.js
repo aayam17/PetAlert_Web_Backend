@@ -17,7 +17,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Correct debug middleware AFTER express.json()
 app.use((req, res, next) => {
   console.log("---- INCOMING REQUEST ----");
   console.log("Method:", req.method);
@@ -27,10 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// DB Connection
 connectDB();
 
-// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/lostandfound", lostAndFoundRoutes);
 app.use("/api/vaccinationrecords", vaccinationRecordRoutes);
@@ -38,13 +35,14 @@ app.use("/api/vetappointments", vetAppointmentRoutes);
 app.use("/api/memorials", memorialRoutes);
 app.use('/api/admin', adminStatsRoute);
 
-// Test Route
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-// Start Server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// ✅ REMOVE THIS from index.js
+// const PORT = process.env.PORT || 3000;
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+module.exports = app;
