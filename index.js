@@ -13,6 +13,7 @@ const vetAppointmentRoutes = require("./routes/vetappointmentRoutes");
 const memorialRoutes = require("./routes/memorialRoutes");
 const adminStatsRoute = require('./routes/adminStats');
 const uploadRoutes = require("./routes/uploadRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 dotenv.config();
 
@@ -68,6 +69,7 @@ app.use("/api/vetappointments", vetAppointmentRoutes);
 app.use("/api/memorials", memorialRoutes);
 app.use("/api/admin", adminStatsRoute);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/users", userRoutes); 
 
 app.get("/", (req, res) => {
   res.send("API is running...");
