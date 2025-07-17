@@ -1,9 +1,9 @@
-// /index.js or app.js
-
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
@@ -17,6 +17,38 @@ const uploadRoutes = require("./routes/uploadRoutes");
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+
+// ✅ SOCKET.IO INSTANCE
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
+
+// Save io globally so controllers can emit events
+app.set("io", io);
+
+// Listen for client connections
+io.on("connection", (socket) => {
+  console.log("✅ New client connected");
+
+  setTimeout(() => {
+  io.emit("memorial:new", {
+    petName: "Buddy",
+    message: "We love you forever.",
+    dateOfPassing: "2025-07-10",
+    imageUrl: "",
+  });
+  console.log("Test event emitted!");
+}, 3000);
+
+
+  socket.on("disconnect", () => {
+    console.log("❌ Client disconnected");
+  });
+});
 
 // Middleware
 app.use(cors());
@@ -41,4 +73,4 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-module.exports = app;
+module.exports = { app, server };
