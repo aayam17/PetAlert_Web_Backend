@@ -7,12 +7,19 @@ const protect = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id).select("-password"); 
+    req.user = await User.findById(decoded.id).select("-password");
+
     if (!req.user) return res.status(404).json({ message: "User not found" });
     next();
   } catch (err) {
     console.error("Token error:", err.message);
-    res.status(401).json({ message: "Token is not valid" });
+
+    // Add specific error for token expiry
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: "Token expired" });
+    }
+
+    return res.status(401).json({ message: "Invalid token" });
   }
 };
 
