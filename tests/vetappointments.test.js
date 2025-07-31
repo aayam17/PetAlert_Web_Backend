@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const app = require("../index").app;
 const VetAppointment = require("../models/VetAppointment");
 
 let token;
@@ -68,4 +68,20 @@ describe("Vet Appointments", () => {
 
     expect(res.statusCode).toBe(200);
   });
+});
+
+test("should not update appointment without token", async () => {
+  const res = await request(app)
+    .put(`/api/vetappointments/${id}`)
+    .send({ notes: "No token update" });
+
+  expect(res.statusCode).toBe(401);
+});
+
+test("should return 404 for deleting non-existent appointment", async () => {
+  const res = await request(app)
+    .delete(`/api/vetappointments/000000000000000000000000`)
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(404);
 });

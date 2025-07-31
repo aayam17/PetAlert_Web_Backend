@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const app = require("../index").app;
 const LostAndFound = require("../models/LostAndFound");
 
 let token;
@@ -82,4 +82,35 @@ describe("Lost and Found API", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("Deleted successfully.");
   });
+});
+
+  test("should fail to update with invalid ID", async () => {
+    const res = await request(app)
+      .put("/api/lostandfound/invalid123")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ description: "Invalid update" });
+
+    expect(res.statusCode).toBe(500);
+  });
+
+  test("should not delete without token", async () => {
+    const res = await request(app).delete(`/api/lostandfound/${lostId}`);
+    expect(res.statusCode).toBe(401);
+  });
+
+  test("should return 404 for updating non-existent entry", async () => {
+  const res = await request(app)
+    .put(`/api/lostandfound/000000000000000000000000`)
+    .set("Authorization", `Bearer ${token}`)
+    .send({ description: "Non-existent" });
+
+  expect(res.statusCode).toBe(404);
+});
+
+test("should return 404 for deleting non-existent entry", async () => {
+  const res = await request(app)
+    .delete(`/api/lostandfound/000000000000000000000000`)
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(404);
 });

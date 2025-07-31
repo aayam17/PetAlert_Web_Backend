@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const app = require("../index").app;
 const User = require("../models/User");
 
 beforeAll(async () => {
@@ -66,3 +66,29 @@ describe("Auth Tests", () => {
     expect(res.statusCode).toBe(400);
   });
 });
+
+  test("should fail login with missing fields", async () => {
+    const res = await request(app)
+      .post("/api/auth/login")
+      .send({ email: "" });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+  test("should not register with invalid email", async () => {
+    const res = await request(app)
+      .post("/api/auth/register")
+      .send({ username: "X", email: "bademail", password: "123456" });
+
+    expect(res.statusCode).toBe(400);
+  });
+
+
+test("should not login with empty fields", async () => {
+  const res = await request(app)
+    .post("/api/auth/login")
+    .send({ email: "", password: "" });
+
+  expect(res.statusCode).toBe(400);
+});
+

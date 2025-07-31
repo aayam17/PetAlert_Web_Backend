@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const app = require("../index").app;
 const Memorial = require("../models/Memorial");
 
 let token;
@@ -81,4 +81,43 @@ describe("Memorial API", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("Deleted successfully.");
   });
+});
+
+  test("should fail update with bad ID", async () => {
+    const res = await request(app)
+      .put("/api/memorials/badid123")
+      .set("Authorization", `Bearer ${token}`)
+      .send({ message: "Fail update" });
+
+    expect(res.statusCode).toBe(500);
+  });
+
+  test("should not delete without token", async () => {
+    const res = await request(app).delete(`/api/memorials/${memorialId}`);
+    expect(res.statusCode).toBe(401);
+  });
+
+  test("should not update memorial without token", async () => {
+  const res = await request(app)
+    .put(`/api/memorials/${memorialId}`)
+    .send({ message: "No token" });
+
+  expect(res.statusCode).toBe(401);
+});
+
+test("should return 404 for deleting non-existent memorial", async () => {
+  const res = await request(app)
+    .delete(`/api/memorials/000000000000000000000000`)
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(404);
+});
+
+test("should return array from GET /api/memorials even if empty", async () => {
+  const res = await request(app)
+    .get("/api/memorials")
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(200);
+  expect(Array.isArray(res.body)).toBe(true);
 });

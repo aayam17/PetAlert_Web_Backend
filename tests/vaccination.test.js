@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const app = require("../index").app;
 const Vaccination = require("../models/VaccinationRecord");
 
 let token;
@@ -81,4 +81,14 @@ describe("Vaccination Record API", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.message).toBe("Deleted successfully.");
   });
+});
+
+
+test("should not update vaccination with invalid ID", async () => {
+  const res = await request(app)
+    .put("/api/vaccinationrecords/invalidid123")
+    .set("Authorization", `Bearer ${token}`)
+    .send({ notes: "Invalid update" });
+
+  expect(res.statusCode).toBe(500);
 });
